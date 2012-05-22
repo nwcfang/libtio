@@ -1,0 +1,36 @@
+#! /bin/sh
+
+LOCNAME=$1
+if test -z "$2"; then
+    LOCBASEPATH=./translate ;
+else
+    LOCBASEPATH=$2 ;
+fi;
+
+if test ! -d "$LOCBASEPATH" ; then
+    echo "Error: It's not vaild location base $LOCBASEPATH";
+    exit -1;
+fi;
+
+ENCODING=`echo $LOCNAME | @AWK@  'BEGIN { FS="." } { print $2 }'` ;
+LOCALE=`echo $LOCNAME | @AWK@  'BEGIN { FS="." } { print $1 }'` ;
+
+if test -d ${LOCBASEPATH}/${LOCNAME} ; then
+    exit 0;
+fi;
+
+if test ! -d ${LOCBASEPATH}/${LOCALE}.UTF-8 ; then
+    echo "Error: Can't generate locale ${LOCNAME}, there is no source ${LOCALE}.UTF-8";
+    exit 127;
+fi;
+
+mkdir -p ${LOCBASEPATH}/${LOCNAME}
+
+
+for i in `ls ${LOCBASEPATH}/${LOCALE}.UTF-8` ; do
+    if iconv -f utf-8 -t ${ENCODING} ${LOCBASEPATH}/${LOCALE}.UTF-8/$i > ${LOCBASEPATH}/${LOCNAME}/$i; then
+        echo "${LOCBASEPATH}/${LOCNAME}/$i generated";
+    else 
+        echo "Generation of ${LOCBASEPATH}/${LOCNAME}/$i failed";
+    fi;
+done;

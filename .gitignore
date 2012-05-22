@@ -1,0 +1,29 @@
+syntax: glob
+*~
+*.bak
+*.ede
+*.o
+*.orig
+*.swp
+*.swo
+*\#*
+tags
+TAGS
+Doxyfile
+config.h
+src/tools/inlocgen.sh
+Version
+configure
+Makefile
+cscope.*
+cscope.out
+
+syntax: regexp
+^Docs/.*
+^\.[^h].*
+^bin/.*
+^lib/.*
+^autom4te.cache/.*
+^config\..*
+^[^/]*\.out.*
+^[^/]*\.tar\..{2,3}

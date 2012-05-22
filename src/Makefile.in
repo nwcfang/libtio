@@ -1,0 +1,82 @@
+	 ###################################################
+	 # Author: Gennady Sazonov <sazonov_g@rti-mints.ru>#
+	 # Date:   2010-06-25                              #
+	 ###################################################
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+CFLAGS+=@DEFS@
+LN_S=@LN_S@
+SOURCES := $(wildcard *.c)
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+VERSION = $(shell cat ../Version)
+OBJDIR=../objs
+OBJFULLPATH=$(patsubst %.o,$(OBJDIR)/%.o,$(OBJECTS))
+LOCALENAME=@MLOCALE@
+LOCALEPATH=translate/$(LOCALENAME)
+INCLUDE=-I include -I ../include -I $(LOCALEPATH)
+LIBS+= @LIBS@
+RANLIB=@RANLIB@
+AR=@AR@
+AWK=@AWK@
+CFLAGS+=-DVERSION=$(VERSION) -DVERSIONSTR="\"@PACKAGE_VERSION@\""
+export LIBS
+export OBJECTS
+
+# Определения для библиотеки
+
+LIBDIR=../lib
+LIBSTATICNAME=@PACKAGE_NAME@.a
+LIBSTATICPATH=$(LIBDIR)/$(LIBSTATICNAME)
+LIBDYNAMICNAME=@PACKAGE_NAME@.so.@PACKAGE_VERSION@
+LIBDNAMESHORT=@PACKAGE_NAME@.so
+LIBDYNAMICPATH=$(LIBDIR)/$(LIBDYNAMICNAME)
+LIBDSHORTPATH=$(LIBDIR)/$(LIBDNAMESHORT)
+
+
+
+
+vpath %.o $(OBJDIR)
+vpath %.h include
+vpath %.h ../include
+
+all: lib
+	
+.PHONY: tests 
+tests: lib
+	$(MAKE)  -C tests
+.PHONY: lib
+lib: @STATIC@ @DYNAMIC@ 
+	
+.PHONY: static
+static:  $(LIBSTATICPATH)
+$(LIBSTATICPATH): $(OBJECTS)
+	$(AR) $(LIBSTATICPATH) $(OBJFULLPATH)
+	$(RANLIB) $(LIBSTATICPATH)
+
+.PHONY: dynamic
+dynamic: $(LIBDYNAMICPATH)
+$(LIBDYNAMICPATH): $(OBJECTS)
+	$(CC) -shared -Wl,-soname,$(LIBDYNAMICNAME) -o $(LIBDYNAMICPATH) $(OBJFULLPATH) $(LIBS)
+	$(LN_S) -f $(LIBDYNAMICNAME) $(LIBDSHORTPATH)
+
+# Секция настройки зависимостей для конкретной цели
+init.c: tioinit.h
+utf.c: utf.h
+help.c: tioinit.h
+
+# Общие правила сборки
+%.o: %.c tio.h tioerror.h tiowerror.h $(LOCALEPATH)
+	$(CC) -o $(OBJDIR)/$@ -c $(CFLAGS) $(INCLUDE) $<
+
+$(LOCALEPATH): tools/inlocgen.sh
+	sh tools/inlocgen.sh $(LOCALENAME)
+
+
+.PHONY: dirs-clean
+dirs-clean:
+	-rm -fv *~
+	-rm -fv \#*
+	-rm -fv *\#
+	$(MAKE) -C tools dirs-clean
+	$(MAKE) -C tests dirs-clean

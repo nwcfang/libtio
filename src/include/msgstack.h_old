@@ -1,0 +1,48 @@
+/**
+ * @file   msgstack.h
+ * @author Egorov N.V. <egorov@rti-mints.ru>
+ * @date   Wed Aug 11 14:25:23 2010
+ * 
+ * @brief  
+ * 
+ * 
+ */
+
+
+#ifndef _TIO_MSGSTACK_H
+#define _TIO_MSGSTACK_H
+
+enum tio_msg_struct  
+{
+    TIOSTRING = 0,
+    TIOSTRUCT = 1,
+    TIOTABLE = 2
+};
+
+enum tio_msg_type
+{
+    TIOERRORMSG = 0,
+    TIODEBUGMSG = 1,
+    TIOWARNMSG = 2,
+    TIOINFOMSG = 3
+};
+
+
+typedef struct _msg_stack_rec
+{
+    struct _msg_stack_rec *next;
+    enum tio_msg_struct type;
+    enum tio_msg_type   t;
+    void *msg;
+} msg_stack_rec;
+
+
+typedef int (*outfunc)(msg_stack_rec*);
+
+outfunc *typefuncs;
+
+
+
+
+
+#endif //_TIO_MSGSTACK_H

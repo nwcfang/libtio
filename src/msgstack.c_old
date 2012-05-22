@@ -1,0 +1,81 @@
+/**
+ * @file   msgsatck.c
+ * @author Egorov N.V. <egorov@rti-mints.ru>
+ * @date   Wed Aug  4 12:32:46 2010
+ * 
+ * @brief  Файл реализации стека очериди сообщений для функций вывода
+ * 
+ * 
+ */
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <pthread.h>
+
+
+#include <tioinit.h>
+#include <tioerror.h>
+#include <tiowerror.h>
+
+#include <msgstack.h>
+
+
+#ifdef ENABLE_MSG_STACK
+
+/// Мутекс последнего элемента буферизуеммой очереди вывода
+static pthread_mutex_t locklast = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t locktop  = PTHREAD_MUTEX_INITIALIZER;
+static msg_stack_rec *top  = NULL; /**< Вершина очереди
+                                    * буферизованного вывода */
+static msg_stack_rec *last = NULL; /**< Последний в очереди элемент
+                                    * буферизованного вывода */
+
+/// Мутекс последнего элемента небуферизуемой очереди вывода
+static pthread_mutex_t lockilast = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t lockitop  = PTHREAD_MUTEX_INITIALIZER;
+static msg_stack_rec *itop = NULL; /**< Вершина очереди
+                                    * небуферизованного вывода */
+static msg_stack_rec *ilast = NULL; /**< Последний элемент в очереди
+                                     * небуферизованного вывода */
+
+static pthread_cond_t maincond = PTHREAD_COND_INITIALIZER;
+
+
+
+
+static void add_msg(msg_stack_rec *msg)
+{
+    if (!msg)
+        return;
+    pthread_mutex_lock(&locklast);
+    last->next = msg;
+    msg->next = NULL;
+    last = msg;
+    pthread_mutex_lock(&locktop);
+    if (!top)
+        top=last;
+    pthread_mutex_unlock(&locktop);
+    pthread_mutex_unlock(&locklast);
+    pthread_cond_broadcast(&maincond);
+}
+
+static void add_imsg(msg_stack_rec *msg)
+{
+    if(!msg)
+        return;
+    pthread_mutex_lock(&lockilast);
+    ilast->next = msg;
+    msg->next = NULL;
+    ilast = msg;
+    pthread_mutex_lock(&lockitop);
+    if(!itop)
+        top=last;
+    pthread_mutex_unlock(&lockitop);
+    pthread_mutex_unlock(&lockilast);
+    pthread_cond_broadcast(&maincond);
+}
+
+#endif //ENABLE_MSG_STACK

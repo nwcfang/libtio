@@ -1,0 +1,45 @@
+    #############################################################
+    # Файл сборки тестовых целей в проекте.			#
+    # Все данные размещаются в каталоге obj на два уровня выше  #
+    #############################################################
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+CP=@CP@
+
+SOURCES := $(wildcard test_*.c)
+SOURCES+= $(wildcard fail_*.c)
+TESTOBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+TESTS=$(patsubst %.c,%,$(SOURCES))
+OBJDIR=../../objs/tests
+INCLUDE=-I ../include -I ../../include
+MOBJABS=$(patsubst %.o,../../objs/%.o,$(OBJECTS))
+BINDIR=../../bin
+RESULTS= $(patsubst %, $(BINDIR)/%,$(wildcard fail_*.result))
+LIBS+=-ltio
+LIBPATH=-L ../../lib
+
+
+vpath %.o $(OBJDIR)
+vpath %.o ../../objs
+vpath %.h ../include
+vpath %.h ../../include
+vpath %   $(BINDIR)
+
+all: $(TESTS) $(RESULTS)
+	
+test_%: test_%.o  $(OBJECTS)
+	$(CC) $(LIBPATH)  $(LIBS) -o $(BINDIR)/$@ $(OBJDIR)/$< 
+$(BINDIR)/fail_%.result:  fail_%.result 
+	if test -f $<; then $(CP) $<  $(BINDIR)/; fi;
+fail_%: fail_%.o $(OBJECTS)
+	$(CC) $(LIBPATH)  -o $(BINDIR)/$@ $(OBJDIR)/$< $(LIBS) 	
+test_help.o: tioinit.h
+test_decode-params.o: tioinit.h
+%.o: %.c tio.h tioerror.h
+	$(CC) -o $(OBJDIR)/$@ -c $(CFLAGS) $(INCLUDE) $<
+.PHONY: dirs-clean
+dirs-clean:
+	-rm -fv *~
+	-rm -fv \#*
+	-rm -fv *\#

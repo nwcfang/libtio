@@ -1,0 +1,170 @@
+#@configure_input@
+
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+INSTALL=@INSTALL@
+LN_S=@LN_S@
+MKDIR_P=@MKDIR_P@
+DIRS = bin objs objs/tests lib
+HG=@HG@
+SRCPACK=@PACKAGE_NAME@-@PACKAGE_VERSION@
+
+
+LIBDIR=lib
+LIBSTATICNAME=@PACKAGE_NAME@.a
+LIBDYNAMICNAME=@PACKAGE_NAME@.so.@PACKAGE_VERSION@
+LIBDNAMESHORT=@PACKAGE_NAME@.so
+
+HEADERS=$(patsubst include/%.h,%.h,$(wildcard include/*.h))
+SOURCES=$(wildcard src/*.c)
+SOURCES+=$(wildcard src/tests/*.c)
+SOURCES+=$(wildcard src/include/*.h)
+SOURCES+=$(wildcard include/*.h)
+
+DOCDIR=@PACKAGE_NAME@-@PACKAGE_VERSION@
+PDFNAME=@PACKAGE_NAME@-@PACKAGE_VERSION@.pdf
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+datarootdir=@datarootdir@
+docdir=@docdir@
+libdir=@libdir@
+htmldir=@htmldir@/$(DOCDIR)
+pdfdir=@pdfdir@/$(DOCDIR)
+includedir=@includedir@
+
+
+all: objects
+	
+.PHONY: dist-bz2 dist-gzip  dist-daily
+dist-bz2:  $(SRCPACK)
+	tar cjf $(SRCPACK).tar.bz2 $(SRCPACK)/
+	rm -fr $(SRCPACK)
+dist-gzip:  $(SRCPACK)
+	tar czf $(SRCPACK).tar.gz $(SRCPACK)/
+	rm -fr $(SRCPACK)
+dist-daily: $(SRCPACK)
+	tar czf $(SRCPACK)-r`$(HG)`.tar.gz $(SRCPACK)
+	rm -fr $(SRCPACK)
+$(SRCPACK): .hg 
+	hg clone ./ $(SRCPACK)
+	cd $(SRCPACK) && autoconf && $(HG) > Version
+	rm -fr $(SRCPACK)/.hg*
+	rm -fr $(SRCPACK)/autom4te*
+
+.PHONY: install deinstall install-docs
+install: objects  @INSTALLDOCS@
+	if test ! -d $(libdir); then     \
+		$(MKDIR_P) $(libdir); 	 \
+	fi;
+	if test -e  $(LIBDIR)/$(LIBSTATICNAME); then \
+		cp -f $(LIBDIR)/$(LIBSTATICNAME) $(libdir)/ ; \
+	fi;
+	if test -e  $(LIBDIR)/$(LIBDYNAMICNAME); then \
+		cp -f $(LIBDIR)/$(LIBDYNAMICNAME) $(libdir)/ ; \
+		$(LN_S) $(LIBDYNAMICNAME) $(libdir)/$(LIBDNAMESHORT); \
+	fi;
+	if test ! -d $(includedir); then $(MKDIR_P) $(includedir); fi
+	for i in $(HEADERS); do                    \
+		$(INSTALL) -m0644 include/$${i} $(includedir)/$${i}; \
+	done;
+deinstall: 
+	-rm -f $(libdir)/$(LIBSTATICNAME)
+	-rm -f $(libdir)/$(LIBDYNAMICNAME)
+	-rm -f $(libdir)/$(LIBDNAMESHORT)
+	for i in $(HEADERS); do                    \
+		rm -fr $(includedir)/$${i}; \
+	done;
+	-rm -f $(pdfdir)/$(PDFNAME)
+	-rm -fr $(htmldir)
+	-rm -fr $(pdfdir)
+
+install-docs: install-html-docs @INSTALL_PDF_DOCS@
+
+install-pdf-docs: docs
+	$(MKDIR_P) $(pdfdir)
+	cp -f Docs/latex/refman.pdf $(pdfdir)/$(PDFNAME)
+
+install-html-docs: docs
+	$(MKDIR_P) $(htmldir)
+	cp -fr Docs/html $(htmldir)
+
+.PHONY: objects
+objects: dirs @MAKEVERSION@
+	make -C src
+.PHONY: docs
+docs: Docs/html/index.html @LATEX@ 
+.PHONY: latex 
+latex: Docs/latex/refman.pdf
+Docs/latex/refman.pdf: Docs/latex/Makefile
+	$(MAKE) -C Docs/latex
+Docs/latex/Makefile: Doxyfile $(SOURCES) 
+	doxygen
+Docs/html/index.html: Doxyfile $(SOURCES)
+	doxygen
+check: tests bin/runtests.sh
+	@echo "________________________________________"
+	@echo "||||||||||||||||||||||||||||||||||||||||"
+	@echo "________________________________________"
+	bin/runtests.sh bin
+
+.PHONY: tests
+tests: dirs
+	$(MAKE) -C src tests
+
+.PHONY: dirs
+dirs: $(DIRS)
+$(DIRS):
+	mkdir -p $(DIRS)
+
+bin/runtests.sh: src/tools/runtests.sh
+	cp $< $@
+	chmod +x $@
+
+.PHONY: distclean
+distclean: clean dirs-clean
+	-rm -f configure
+	-rm -f Makefile src/Makefile src/tests/Makefile Doxyfile
+	-rm -fr $(DIRS)	
+	-rm -f src/include/config.h
+.PHONY: clean
+clean:
+	make -C src/translate clean
+	-rm -fv objs/*.o objs/tests/*.o bin/* lib/*
+	-rm -fr autom4te.cache
+	-rm -f *.log *.status
+	-rm -fr Docs
+	-rm -fr $(SRCPACK)
+
+
+
+
+.PHONY: dirs-clean
+dirs-clean:
+	-rm -fv *~
+	-rm -fv \#*
+	-rm -fv *\#
+	-rm -f callgrind*
+	-rm -f massif*
+	-rm -fr $(SRCPACK)* $(SRCPACK)
+	$(MAKE) -C src dirs-clean
+	
+makeversion:
+	if test -d .hg; then $(HG) > Version; fi
+vim:
+	make # Чтобы, если в программе есть ошибки, генерация тэгов не выполнялась
+	@echo Creating Vim directory...
+	mkdir -p $(VIM_PREFIX)
+	@echo Generating Vim ctags...
+	tags=''; \
+	for file in $(SRC_PREFIX)*.c; \
+	do \
+	 tags+=$$(gcc -M $(CFLAGS) $(SRC_PREFIX)$$(basename $$file) | sed -r 's/.+?://'); \
+	done; \
+	tags=$$(echo $$tags | sed 's/\\//g' | sed 's/ /\n/g' | sort -u); \
+	ctags -f $(VIM_PREFIX)ctags $$tags
+	@echo "Vim ctags successfully gotten."
+	@echo Generating Vim syntax...
+	sed -r '/\tt(\ttyperef:struct:[a-zA-Z0-9_]+){0,1}$$/!d' $(VIM_PREFIX)ctags | awk '{print "syn keyword cType", $$1}' | sort -u > $(VIM_PREFIX)syntax.vim
+	@echo Vim files has been created...
+
