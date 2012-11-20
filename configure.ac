@@ -4,8 +4,8 @@
 AC_PREREQ([2.60])
 AC_INIT([libtio], [0.4.8])
 
-
-AC_CONFIG_SRCDIR([src/include/config.h.in])
+# Проверка. Говорит о том что данная директория является директорией с исходниками.
+AC_CONFIG_SRCDIR([src/include/config.h.in]) 
 AC_CONFIG_HEADERS([src/include/config.h])
 
 

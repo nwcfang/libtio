@@ -1,7 +1,7 @@
 /**
  * @file    print.c
- * @author  Gennady Sazonov <sazonov_g@rti-mints.ru>
- * @date    2010-09-15
+ * @author  Gusev Mikhail <gpinok@gmail.com>
+ * @date    2012-09-15
  *
  * @brief    В файле содержаться функции вывода.
  *

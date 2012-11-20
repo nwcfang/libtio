@@ -1,11 +1,10 @@
 /**
- * @author Egorov N.V. <egorov@rti-mints.ru>
- * @date   Fri Jul  9 14:01:58 2010
- * 
- * @brief  Реализация обработки ошибок в библиотеки
  *
- * Данная реализация является черновой и должна быть в будующем
- * поностью переработанна
+ * @file   test_error.c
+ * @author Gusev M.S.
+ * @date   2012-09-07
+ * 
+ * @brief  Функцкция обработки ошибок 
  * 
  */
 
@@ -27,7 +26,7 @@
 
 typedef struct _errdeque
 {
-    pthread_t id;
+    pthread_t id;   //дескриптор потока 
     int error;
     struct _errdeque *next;
     struct _errdeque *prev;
@@ -83,9 +82,18 @@ void tioErrorFree(void)
     pthread_mutex_unlock(&errlock);
 }
 
-
+//==================================================================
 int tioSetErrorNum(int num)
 {
+
+    //typedef struct _errdeque
+    //{
+        //pthread_t id;   //дескриптор потока 
+        //int error;
+        //struct _errdeque *next;
+        //struct _errdeque *prev;
+    //} errdeque;
+    
     errdeque *iter, *obj;
     pthread_t thread;
 
@@ -112,6 +120,7 @@ int tioSetErrorNum(int num)
             pthread_mutex_unlock(&errlock);
             return TEEPICFAIL;
         }
+        // сохраняем код новой ошибки и id потока
         obj->prev = enderr;
         obj->next = NULL;
         enderr->next = obj;
@@ -127,6 +136,7 @@ int tioSetErrorNum(int num)
             iter->error = num;
             break;
         }
+
         if(res < 0)
         {
             if(!(obj = malloc(sizeof(errdeque))))
@@ -156,7 +166,7 @@ int tioSetErrorNum(int num)
 int tioGetError()
 {
     errdeque *iter;
-    pthread_t id = pthread_self();
+    pthread_t id = pthread_self(); //берет id своего потока 
     int result = 0;
 
     pthread_mutex_lock(&errlock);

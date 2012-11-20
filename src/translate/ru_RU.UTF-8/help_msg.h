@@ -1,7 +1,7 @@
 /**
  * @file   help_msg.h
- * @author Egorov N.V. <egorov@rti-mints.ru>
- * @date   Fri Sep 17 12:49:39 2010
+ * @author Gusev M.S.
+ * @date   2011-06-21
  * 
  * @brief  Текстовые сообщения для help.c
  * 

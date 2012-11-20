@@ -569,8 +569,8 @@ static int extractparams(int start, int argc, char** argv)
 {
     size_t i;
     size_t cnt=0;
-    tio_simple_chain *ptr;
-    tio_simple_chain *pt;
+    tio_simple_chain *ptr = NULL;
+    tio_simple_chain *pt = NULL;
     tio_key_string *p;
     
     for (i=start; i < argc; i++)

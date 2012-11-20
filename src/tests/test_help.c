@@ -1,8 +1,8 @@
 /**
  *
  * @file    test_help.c
- * @author  Gennady Sazonov <sazonov_g@rti-mints.ru>
- * @date    2010-06-25
+ * @author  Gusev M.S. 
+ * @date    2011-06-25
  *
  * @brief    Тест для проверки вывода функции помощи.
  *
@@ -25,14 +25,14 @@ int main( int argc, char *argv[] )
     char* mas1[] = { "--ip", "--adress", NULL };
     char* mas2[] = { "--sort", NULL };
     char* mas3[] = { "--file", "--fl", NULL };
-//    char* mas5[] = { NULL };
+    char* mas5[] = { NULL };
 
     tio_param_rec p[SIZE] = {
         {
             "List",
             mas,
             "kd",
-            "Выводит информацию списком",
+            "List information about the FILEs (the current directory by default).  Sort entries alphabetically if none of -cftuvSUX nor --sort. Mandatory arguments to long options are mandatory for short options too.",
             NULL,
             0
         },
@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
             "IP",
             mas1,
             NULL,
-            "Указать IP адресс. А ещё этот ключ делает бла-бла-бла. После чего по новой бла-бла-бла. И третий раз для теста бла-бла-бла.",
+            "show / manipulate routing, devices, policy routing and tunnels",
             NULL,
             1
         },
@@ -48,7 +48,7 @@ int main( int argc, char *argv[] )
             "Check",
             mas2,
             "sS",
-            "Сортировка даннах",
+            "sort lines of text files",
             NULL,
             "a"
         },
@@ -56,7 +56,7 @@ int main( int argc, char *argv[] )
             "File",
             mas3,
             NULL,
-            "Сортировка данных",
+            "determine file type",
             NULL,
             1
         },
@@ -64,7 +64,7 @@ int main( int argc, char *argv[] )
             "Tab",
             NULL,
             "t",
-            "В табличном виде",
+            "table view",
             NULL,
             1
         }

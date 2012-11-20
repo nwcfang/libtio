@@ -1,3 +1,13 @@
+/**
+ *
+ * @file    tioTableBegin.c
+ * @author  Gusev M.S. 
+ * @date    2011-02-25
+ *
+ * @brief   Набор функций для табличного вывода данных
+ *
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,8 +17,7 @@
 
 #define WIDTH 120
 
-typedef struct cell     /*Однонаправелнный список*/ 
-
+typedef struct cell     /*list*/ 
 {
     void **s;           /*Массив указателей на неизвестный тип данных*/ 
     struct cell *n;     /*Указатель на следующий элемент списка*/ 
@@ -225,9 +234,10 @@ void *tioTableRecord( void *td, ...  )
 
     va_end(ap);
 
-    extPointer = (void *) datTab;
+    //extPointer = (void *) datTab;
+    td = ( void * ) datTab;
 
-    return extPointer;
+    return td;
 
 }
 

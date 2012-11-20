@@ -19,7 +19,6 @@ int main( )
     char *s_test = "Animated by Ryan Woodward";
     char *s_test2 = "The essence of COM is a language-neutral way of implementing objects that can be used in environments";
     char *s_test4 = "An advantage of COM+";
-    printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
 
     printf("Cap string\n");
     
@@ -37,7 +36,6 @@ int main( )
 
     tioTableEnd( td );
 
-    printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
     return 0;
 
 }

@@ -1,7 +1,7 @@
 /**
  * @file    help.c
- * @author  Sazonov G.V. <sazonov_g@rti-mints.ru>
- * @date    2010-06-21
+ * @author  Gusev M.S. 
+ * @date    2011-06-21
  *
  * @brief    В файле содержаться функции вывода помощи на экран.
  *
@@ -80,8 +80,7 @@ int tioHelp( const char* help_msg, const char* progName,
         int size;
         if( lenDes > MAX_DES )
         {
-            do
-            {
+            do {
                 endStr = utf_stroffset( headStr, MAX_DES );
                 size = (int)( endStr - headStr );
                 strncpy( buf, headStr, size );

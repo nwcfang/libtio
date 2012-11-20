@@ -1,7 +1,7 @@
 /**
  * @file   test_error.c
- * @author Egorov N.V. <egorov@rti-mints.ru>
- * @date   Fri Jul  9 14:31:19 2010
+ * @author Gusev M.S.
+ * @date   2012-09-07
  * 
  * @brief  Тестирование функцкций обработки ошибок 
  * 
@@ -82,13 +82,14 @@ int main(int argc, char** argv)
 
     if (!tioSetErrorNum(100))
     {
-        fputs("Неверная реакция на усаановку значения до инициализации", stderr);
+        fputs("Неверная реакция на установку значения до инициализации", stderr);
         return -1;
     }
 
     tioErrorInit();    
     for ( i = threads; i->name; ++i )
     {
+        //(out) id, param (default), function (thread main), arg (thread main)  
         if (pthread_create(&(((test_thread*)i)->id), NULL, testfunc, i->name))
             return -1;
     }
