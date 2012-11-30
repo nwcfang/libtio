@@ -15,7 +15,7 @@
 
 #include <tio.h> 
 
-#define WIDTH 120
+#define WIDTH 120 
 
 typedef struct cell     /*list*/ 
 {
@@ -69,8 +69,8 @@ void* tioTableBegin( const char* format,  ... )
             ++ i;
     }
 
-    printf("Count of letter %d.\nCount of colum %d.\n", datTab->countLetter,
-            datTab->countColum );
+    //printf("Count of letter %d.\nCount of colum %d.\n", datTab->countLetter,
+      //      datTab->countColum );
 
     /*Allocating memory for cap*/
     if( (datTab->cap = (char**) calloc(datTab->countColum , sizeof(char*))) != NULL )
@@ -98,7 +98,7 @@ void* tioTableBegin( const char* format,  ... )
         return NULL;
     }
 
-    printf("\n");
+    /*printf("\n");*/
 
     /*Allocating memory for pointer to the head of list*/ 
     if( (datTab->head = (cl *) malloc( sizeof(cl))) == NULL )
@@ -118,14 +118,14 @@ void* tioTableBegin( const char* format,  ... )
     } 
 
     /*Writing data types to the buffer*/
-    printf ("Data types: ");
+    //printf ("Data types: ");
     for ( i = 0; i < datTab->countColum; ++ i )
     {
         datTab->bufType[i] = va_arg(ap, int);
-        printf("%d ", datTab->bufType[i]);
+        /*printf("%d ", datTab->bufType[i]);*/
     }
 
-    printf("\n");
+    /*printf("\n");*/
 
 
     /*Set colum's name*/
@@ -153,8 +153,8 @@ void* tioTableBegin( const char* format,  ... )
     /*Print colum's name*/
     for( i = 0; i < datTab->countColum; ++i )
     {
-        printf("%s", datTab->cap[i]);
-        printf("\n");
+        /*printf("%s", datTab->cap[i]);*/
+        /*printf("\n");*/
     }
 
     va_end( ap );
@@ -188,27 +188,27 @@ void *tioTableRecord( void *td, ...  )
             ch = (char) va_arg( ap, int);
             datTab->ptr->s[i] = calloc(1, sizeof(char));
             *(char *)datTab->ptr->s[i] =  ch;
-            printf("char %c /added\n", *(char *)datTab->ptr->s[i]);
+            //printf("char %c /added\n", *(char *)datTab->ptr->s[i]);
             break;
         case 2:
             dbd =  va_arg( ap, double);
 
             datTab->ptr->s[i] = malloc(sizeof(double));
             *(double *)datTab->ptr->s[i] = dbd;
-            printf("double %f /added\n", *(double *)datTab->ptr->s[i]);
+            //printf("double %f /added\n", *(double *)datTab->ptr->s[i]);
 
             break;
         case 3:
             ln =  va_arg( ap, long);
             datTab->ptr->s[i] = calloc(1, sizeof(long));
             *(long *)datTab->ptr->s[i] = ln;
-            printf("long %ld /added\n", *(long *)datTab->ptr->s[i]);
+            //printf("long %ld /added\n", *(long *)datTab->ptr->s[i]);
             break;
         case 4:
             strn = va_arg( ap, char *);
             datTab->ptr->s[i]=(char *)calloc(strlen(strn) + 1, sizeof(char));  
             strcpy ((char *)datTab->ptr->s[i],strn);
-            printf("string %s /added\n",  (char *) datTab->ptr->s[i]);
+            //printf("string %s /added\n",  (char *) datTab->ptr->s[i]);
             break;
         default:
             printf("Неправельный параметр функции tioTableRecord!\n");
@@ -258,7 +258,7 @@ int tioTableEnd( void *td )
 
     /*Calculate the column width depending on the number of*/  
     lenColCon = WIDTH / datTab->countColum;   
-    printf("Размер колонки = %d\n", lenColCon);
+    //printf("Размер колонки = %d\n", lenColCon);
     
     if( (masType = (int *) malloc(datTab->countColum * sizeof(int))) == NULL)
     {

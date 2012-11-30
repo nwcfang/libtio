@@ -573,6 +573,9 @@ static int extractparams(int start, int argc, char** argv)
     tio_simple_chain *pt = NULL;
     tio_key_string *p;
     
+    for( int nfi = 0; nfi < MAXARGS; ++ nfi)
+        tio_argv[nfi] = malloc( sizeof(char) * 100);
+
     for (i=start; i < argc; i++)
     {
         if (argv[i][0]=='-')
@@ -681,7 +684,9 @@ static int extractparams(int start, int argc, char** argv)
     }
     for (i = cnt; i>0;)
     {
-        tio_argv[--i]=pt->val;
+
+        strcpy( tio_argv[--i], pt->val  );
+        /*tio_argv[--i]=pt->val;*/
         pt=pt->next;
         free(ptr);
         ptr=pt;

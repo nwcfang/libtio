@@ -18,7 +18,7 @@
 #include <tioinit.h>
 
 #include <finish_msg.h>
-
+#define MAXARGS 100
 
 extern char *selfname;
 
@@ -30,6 +30,8 @@ void tioFinish(size_t num)
     {
         num = finish_count;
     }
+    for(int i = 0; i < MAXARGS; ++i)
+        free(tio_argv[i]);
     tioFree();
     fprintf(stdout, finish_messages[num], selfname);
     free(selfname);

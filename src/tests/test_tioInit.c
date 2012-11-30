@@ -1,11 +1,8 @@
 /**
  * @file   test_tioInit.c
- * @author Egorov N.V. <egorov@rti-mints.ru>
- * @date   Mon Jul 12 16:34:32 2010
- * 
+ * @author Gusev M.S <gpinok@gmail.com>
+ * @date   01.09.12
  * @brief  Тест для проверки функции tioInit
- * 
- * 
  */
 
 

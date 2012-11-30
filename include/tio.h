@@ -498,4 +498,6 @@ int tioWarning(const char* message);
  */
 int tioWarningF(const char* format, ... );
 
+#else
+//#error "_TIO_H already defined"
 #endif //_TIO_H

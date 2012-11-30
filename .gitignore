@@ -17,6 +17,8 @@ configure
 Makefile
 cscope.*
 cscope.out
+bin/*
+
 
 syntax: regexp
 ^Docs/.*
