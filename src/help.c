@@ -29,6 +29,7 @@ int tioHelp( const char* help_msg, const char* progName,
     int counter;
     for( idx = 0 ; idx < sz ; ++idx )
     {
+        nolong = 0;
         counter = MAX_TAB;
         // Вывод короткого ключа
         if( par[idx].skeys )
