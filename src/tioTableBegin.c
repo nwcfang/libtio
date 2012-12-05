@@ -345,7 +345,7 @@ int tabRow( void **strings, int *bufType, int countColum, int lenColCon )
 
     /*Calculation number of extra lines of the array*/ 
     for( i = 0; i < countColum; ++ i )
-    {
+    { 
         colStr[i] = strlen( (char *)strings[i] ) / lenColCon; 
         if(max < colStr[i])
             max = colStr[i];
@@ -368,7 +368,7 @@ int tabRow( void **strings, int *bufType, int countColum, int lenColCon )
         {
             for (j = 0; j < (max + 1); ++ j)
             {
-                if((data[i][j] = (char *) malloc (lenColCon * sizeof(char))) == NULL)
+                if((data[i][j] = (char *) malloc ( 2 * lenColCon * sizeof(char))) == NULL)
                 {
                     printf("ERROR!\n");
                     exit(EXIT_FAILURE);
@@ -419,14 +419,42 @@ int tabRow( void **strings, int *bufType, int countColum, int lenColCon )
         case 4:
             for( extraCounter = 0; extraCounter <= colStr[i]; ++ extraCounter )
             {
+                int index = 0;
                 j = extraCounter * (lenColCon - 1);
-                for( offset = 0;
+                offset = 0;
+                
+                while( ( ( lenColCon - 1 ) != index ) && ( ( (char*)strings[i])[j] != '\0' ) )
+                {
+                    if( ( (char*)strings[i])[j] & 0x80 )
+                    {
+                        
+                        data[i][extraCounter][offset] = ((char *)strings[i])[j];
+                        ++ offset;
+                        ++ j;
+                        data[i][extraCounter][offset] = ((char *)strings[i])[j]; 
+                        ++ j;
+                        ++ index;
+                        ++ offset;
+                    }
+                    else
+                    {
+                        data[i][extraCounter][offset] = ((char *)strings[i])[j]; 
+                        ++ j;
+                        ++ offset;
+                        ++ index;
+                    }
+
+                }
+
+
+                /*for( offset = 0;
                         ((offset != (lenColCon - 1)) && (((char *)strings[i])[j] != '\0' )); ++ offset, ++ j)
                 {
                     data[i][extraCounter][offset] = ((char *)strings[i])[j]; 
-                }
+                }*/
+
                 /*Insert spaces*/
-                for( offset; offset < (lenColCon - 1); ++ offset)
+                for( index; index < (lenColCon - 1); ++ index, ++ offset)
                     data[i][extraCounter][offset] = ' ';
             }
             /*Insert spaces*/
