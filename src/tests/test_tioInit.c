@@ -14,7 +14,7 @@
 
 int main()
 {
-    int argc = 12;
+    int argc = 13;
     char buff[100] = {0} ;
     const char* argv[]  =
     {
@@ -29,7 +29,8 @@ int main()
         "--myp",
         "=",
         "FOO",
-        "-bk73"
+        "-bk73",
+        "unnamedKey"
     };
 
 
@@ -93,6 +94,13 @@ int main()
         return -1;
     }
 
+    printf( "unnamedKey is %s\n", tio_argv[0] ); 
+
+    if( strcmp( tio_argv[0], "unnamedKey" ) )
+    {
+        tioFinish(1);
+        return -1;
+    }
     tioFinish(0);
     return 0;
 }

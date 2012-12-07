@@ -1,8 +1,8 @@
 /* Copyright (C) 2010 by РТИ им. Минтса */
 /**
  * @file   init.c
- * @author Egorov N.V. <egorov@rti-mints.ru>
- * @date   Fri Jun 18 14:34:34 2010
+ * @author Gusev M.S. <gpinok@gmail.com>
+ * @date   Fri Jun 18 14:34:34 2011
  * 
  * @brief Реализация инициализации библиотеки и внутренних переменных
  * библиотеки
