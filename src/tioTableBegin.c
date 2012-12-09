@@ -459,8 +459,11 @@ int tabRow( void **strings, int *bufType, int countColum, int lenColCon )
             }
             /*Insert spaces*/
             for(extraCounter = colStr[i] + 1; extraCounter < (max + 1); ++ extraCounter )
+            {
                 for( offset = 0; offset < (lenColCon - 1); ++ offset )
                     data[i][extraCounter][offset] = ' ';
+                data[i][extraCounter][offset] = '\0';
+            }
             break;
         default:
             printf("ERROR!");
@@ -481,7 +484,7 @@ int tabRow( void **strings, int *bufType, int countColum, int lenColCon )
     /*FREE */
     for( i = 0; i < countColum; ++ i )
     {
-        for( j = 0; j < colStr[i]; ++ j )
+        for( j = 0; j <= colStr[i]; ++ j )
         {
             free(data[i][j]);
         }
