@@ -516,15 +516,20 @@ int capMap( int countColum, char **cap, int lenColCon )
 /*Draw line function*/
 int drawLine( int lenColCon )
 {
+
+    char *pLine = malloc( WIDTH * sizeof( char ) );
     int i;
     for( i = 0; i < WIDTH; ++ i )   /*Need correct WIDTH*/ 
     {
+            
         if((i % lenColCon) == 0)
-            printf("+");
+            pLine[i] = '+';
         else
-            printf("-");
+            pLine[i] = '-';
     }
-    printf( "+\n" );
+    pLine[i] = '+';
+    pLine[++i] = '\n';
+    fputs( pLine, stdout );
 
     return 0;
 }
