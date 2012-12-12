@@ -533,6 +533,6 @@ int drawLine( int lenColCon )
     pLine[i] = '+';
     pLine[++i] = '\n';
     fputs( pLine, stdout );
-
+    free( pLine);
     return 0;
 }
